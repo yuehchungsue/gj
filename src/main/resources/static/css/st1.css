@@ -1,0 +1,36 @@
+@charset "utf-8";
+#title
+{
+	
+	width:50%;
+	height:100px;
+	background-color:#8260E1;
+	margin-left:25%;
+	color:white;
+	font-size:22pt;
+	
+}
+#header{
+	background-color:#5A5379;
+	width:50%;
+	height:100px;
+	margin-left:25%;
+}
+#content{
+	width:50%;
+	height:400px;
+	background-color:#E6E2F1;
+	margin-left:25%
+}
+#navigater{
+	background-color:#3F3A55;
+	width:50%;
+	height:30px;
+	margin-left:25%;
+}
+#footer{
+	background-color:#514C6B;
+	width:50%;
+	height:50px;
+	margin-left:25%;
+}

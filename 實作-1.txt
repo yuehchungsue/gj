@@ -1,0 +1,519 @@
+1.db : gj
+
+CREATE DATABASE `gj` /*!40100 DEFAULT CHARACTER SET utf8mb3 COLLATE utf8mb3_bin */ /*!80016 DEFAULT ENCRYPTION='N' */;
+
+CREATE DATABASE `test1` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin */ /*!80016 DEFAULT ENCRYPTION='N' */;
+
+table_set column_set index_set trigger_set view_set store_procedure_set function_set grant_set enevt_set
+
+											priviledge_set(grobal_priviledge_set) rule_set(admirule_set)
+
+												user
+
+													process_rule_type --> process_rule_set
+
+
+
+CREATE TABLE `member` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `memberno` varchar(45) COLLATE utf8mb3_bin DEFAULT NULL,
+  `name` varchar(45) COLLATE utf8mb3_bin DEFAULT NULL,
+  `username` varchar(45) COLLATE utf8mb3_bin DEFAULT NULL,
+  `password` varchar(45) COLLATE utf8mb3_bin DEFAULT NULL,
+  `email` varchar(45) COLLATE utf8mb3_bin DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+
+
+CREATE TABLE `employee` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employeeno` varchar(45) COLLATE utf8mb3_bin DEFAULT NULL,
+  `name` varchar(45) COLLATE utf8mb3_bin DEFAULT NULL,
+  `username` varchar(45) COLLATE utf8mb3_bin DEFAULT NULL,
+  `password` varchar(45) COLLATE utf8mb3_bin DEFAULT NULL,
+  `type` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+
+
+CREATE TABLE `order` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `deskno` varchar(45) COLLATE utf8mb3_bin DEFAULT NULL,
+  `memberno` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+
+
+CREATE TABLE `product` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `productno` varchar(45) COLLATE utf8mb3_bin DEFAULT NULL,
+  `productname` varchar(45) COLLATE utf8mb3_bin DEFAULT NULL,
+  `price` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+
+
+
+2.dta_entity :
+
+人
+
+	會員(客戶) -- member(id, memberno , name , username , password , email)
+
+	員工
+			(合併)
+			管理人員 -- employee(id,employeeno,name,username,password,type(typeno -- 1:admin,0:員工))
+			一般人員
+
+
+物
+	菜色 -- product(id,productno,productname,price)
+	
+
+
+錢
+	定位(單):預約 -- order(id,deskno,ordertime)
+
+
+其他
+	留言
+	訊息
+
+3.Java專案(CRUD) :
+	Spring Boot(web, dev_tool, lombook)
+		MySQL JDBC Driver
+		Mybatis
+	pom.xml
+	application.properties
+		vo
+
+		dao
+
+		controller
+
+4.
+
+member :
+
+int id; String memberno; String name; String username; String password; String email;
+
+	private Integer id;
+	private String memberno;
+	private String name;
+	private String username;
+	private String password;
+	private String email;
+	
+	/**
+	 * @param id
+	 * @param memberno
+	 * @param name
+	 * @param username
+	 * @param password
+	 * @param email
+	 */
+	public member(Integer id, String memberno, String name, String username, String password, String email) {
+		super();
+		this.id = id;
+		this.memberno = memberno;
+		this.name = name;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+	}	
+	
+	/**
+	 * @param memberno
+	 * @param name
+	 * @param username
+	 * @param password
+	 * @param email
+	 */
+	public member(String memberno, String name, String username, String password, String email) {
+		super();
+		this.memberno = memberno;
+		this.name = name;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+	}
+
+
+	/** create :  by menber*/
+	@Insert("insert into member(memberno,name,username,password,email) "
+			+ "values(#{memberno},#{name},#{username},#{password},#{email})")
+	void add(member m);
+	
+	/** query :  by id*/
+	@Select("select * from member where username=#{username} and password=#{password}")
+	member query(String username,String password);
+	
+	@Select("select * from member where id=#{id}")
+	member queryById(Integer id);
+	
+	@Select("")
+	member queryByName(String username);
+	
+	/** query :  all*/
+	@Select("select * from member")
+	List<member> queryAll();
+	
+	//update
+	@Update("update member set name=#{name},password=#{password},email=#{email} where id=#{id}")
+	void update(member m);
+	
+	/** delete :  by id*/
+	@Delete("delete from member where id=#{id}")
+	void delete(int id);
+	
+	@Delete("delete from member where id=#{id}")
+	void deleteById(Integer id);
+
+
+	@Autowired
+	private memberMapper membermapper;
+	
+	@RequestMapping("addMember")
+	public void add(String memberno,String name,String username,String password,String email)
+	{
+		member m=new member(memberno,name,username,password,email);
+		membermapper.add(m);
+	}
+	
+	@RequestMapping("queryUser")
+	//@RequestMapping(value="queryUser", produces="application/json")
+	public member query(String username,String password)
+	{
+		return membermapper.query(username, password);
+	}
+	
+	@RequestMapping("queryMemberAll")
+	public List<member> queryAll()
+	{
+		return membermapper.queryAll();
+	}
+	
+	@RequestMapping("queryMemberById")
+	public member queryId(int id)
+	{
+		return membermapper.queryById(id);
+	}
+	
+	@RequestMapping("updateMember")
+	public void update(member m)
+	{
+		membermapper.update(m);
+	}
+	
+	@RequestMapping("deleteMember")
+	public void deleteByid(int id)
+	{
+		membermapper.delete(id);
+	}	
+
+employee :
+
+int id; String employeeno;String name;String username;String password;int type;
+
+	private Integer id;
+	private String employeeno;
+	private String name;
+	private String username;
+	private String password;
+	private Integer type;
+
+	/**
+	 * @param id
+	 * @param employeeno
+	 * @param name
+	 * @param username
+	 * @param password
+	 * @param type
+	 */
+	public employee(Integer id, String employeeno, String name, String username, String password, Integer type) {
+		super();
+		this.id = id;
+		this.employeeno = employeeno;
+		this.name = name;
+		this.username = username;
+		this.password = password;
+		this.type = type;
+	}
+
+	/**
+	 * @param employeeno
+	 * @param name
+	 * @param username
+	 * @param password
+	 * @param type
+	 */
+	public employee(String employeeno, String name, String username, String password, Integer type) {
+		super();
+		this.employeeno = employeeno;
+		this.name = name;
+		this.username = username;
+		this.password = password;
+		this.type = type;
+	}
+
+	/** create :  by employee*/
+	@Insert("insert into Employee(String employeeno, String name, String username, String password, Integer type) "
+			+ "values(#{employeeno},#{name},#{username},#{password},#{type})")
+	void add(employee m);
+	
+	/** query :  by id*/
+	@Select("select * from Employee where employeeno=#{employeeno} and username=#{username}")
+	employee query(String employeeno, String username);
+
+	@Select("select * from Employee where employeeno=#{employeeno}")
+	employee queryByEmployeeno(String employeeno);
+
+	@Select("select * from Employee where username=#{username}")
+	employee queryByUsername(String username);
+	
+	@Select("select * from Employee where id=#{id}")
+	employee queryById(Integer id);
+	
+	@Select("select * from Employee where name=#{name}")
+	employee queryByName(String name);
+	
+	/** query :  all*/
+	@Select("select * from Employee")
+	List queryAll();
+	
+	//update
+	@Update("update Employee set employeeno=#{employeeno},name=#{name},username=#{username},password=#{password},type=#{type} where id=#{id}")
+	void update(employee m);
+	
+	/** delete :  by id*/
+	@Delete("delete from Employee where id=#{id}")
+	void delete(int id);
+	
+	@Delete("delete from Employee where id=#{id}")
+	void deleteById(Integer id);
+
+
+	@Autowired
+	private employeeMapper employeemapper;
+	
+	@RequestMapping("addEmployee")
+	public void add(String employeeno, String name, String username, String password, Integer type)
+	{
+		employee m=new employee(employeeno, name, username, password, type);
+		employeemapper.add(m);
+	}
+	
+	@RequestMapping("queryUser")
+	//@RequestMapping(value="queryUser", produces="application/json")
+	public employee query(String employeeno, String username)
+	{
+		return employeemapper.query(employeeno, username);
+	}
+	
+	@RequestMapping("queryEmployeeAll")
+	public List<employee> queryAll()
+	{
+		return employeemapper.queryAll();
+	}
+	
+	@RequestMapping("queryEmployeeById")
+	public employee queryId(int id)
+	{
+		return employeemapper.queryById(id);
+	}
+	
+	@RequestMapping("updatEemployee")
+	public void update(employee m)
+	{
+		employeemapper.update(m);
+	}
+	
+	@RequestMapping("deletEemployee")
+	public void deleteByid(int id)
+	{
+		employeemapper.delete(id);
+	}
+
+
+product :
+
+int id; String productno;String productname;int price;
+
+	private Integer id;
+	private String productno;
+	private String productname;
+	private Integer price;
+
+	/**
+	 * @param id
+	 * @param productno
+	 * @param productname
+	 * @param price
+	 */
+	public product(Integer id, String productno, String productname, Integer price) {
+		super();
+		this.id = id;
+		this.productno = productno;
+		this.productname = productname;
+		this.price = price;
+	}
+
+	/**
+	 * @param productno
+	 * @param productname
+	 * @param price
+	 */
+	public product(String productno, String productname, Integer price) {
+		super();
+		this.productno = productno;
+		this.productname = productname;
+		this.price = price;
+	}
+
+	/** create :  by product*/
+	@Insert("insert into product(String productno, String productname, Integer price) "
+			+ "values(#{productno},#{productname},#{price})")
+	void add(product m);
+	
+	/** query :  by id or name*/
+	@Select("select * from product where productno=#{productno} and productname=#{productname}")
+	product query(String productno);
+
+	@Select("select * from product where productno=#{productno}")
+	product queryByProductno(String productno);
+
+	@Select("select * from product where productname=#{productname}")
+	product queryByProductname(String productname);
+	
+	@Select("select * from product where price=#{price}")
+	product queryByPrice(Integer price);
+
+	@Select("select * from product where productname=#{productname}")
+	product queryByName(String productname);
+
+	@Select("select * from product where id=#{id}")
+	product queryById(Integer id);
+	
+	/** query :  all*/
+	@Select("select * from product")
+	List queryAll();
+	
+	//update
+	@Update("update product set productno=#{productno},productname=#{productname},price=#{price} where id=#{id}")
+	void update(product m);
+	
+	/** delete :  by id*/
+	@Delete("delete from product where id=#{id}")
+	void delete(int id);
+	
+	@Delete("delete from product where id=#{id}")
+	void deleteById(Integer id);
+
+
+
+	@Autowired
+	private productMapper productmapper;
+	
+	@RequestMapping("addProduct")
+	public void add(String productno, String productname, Integer price)
+	{
+		product m=new product(productno, productname, price);
+		productmapper.add(m);
+	}
+	
+	@RequestMapping("queryUser")
+	//@RequestMapping(value="queryUser", produces="application/json")
+	public product query(String productno, String productname)
+	{
+		return productmapper.query(productno, productname);
+	}
+	
+	@RequestMapping("queryProductAll")
+	public List<product> queryAll()
+	{
+		return productmapper.queryAll();
+	}
+	
+	@RequestMapping("queryPproductById")
+	public product queryId(int id)
+	{
+		return productmapper.queryById(id);
+	}
+	
+	@RequestMapping("updatProduct")
+	public void update(product m)
+	{
+		productmapper.update(m);
+	}
+	
+	@RequestMapping("deletEProduct")
+	public void deleteByid(int id)
+	{
+		productmapper.delete(id);
+	}
+
+
+order :
+
+private Integer id; private String deskno; private Date ordertime;
+
+
+	private Integer id;
+	private String deskno;
+	private Date ordertime;
+
+
+	/**
+	 * @param id
+	 * @param deskno
+	 * @param ordertime
+	 */
+	public order(Integer id, String deskno, Date ordertime) {
+		super();
+		this.id = id;
+		this.deskno = deskno;
+		this.ordertime = ordertime;
+	}
+
+	/**
+	 * @param deskno
+	 * @param ordertime
+	 */
+	public order(String deskno, Date ordertime) {
+		super();
+		this.deskno = deskno;
+		this.ordertime = ordertime;
+	}
+
+	/** create :  by order*/
+	@Insert("insert into order(String deskno, Date ordertime) "
+			+ "values(#{deskno},#{ordertime})")
+	void add(order m);
+	
+	/** query :  by id or name*/
+	@Select("select * from order where deskno=#{deskno} and ordertime=#{ordertime}")
+	order query(String deskno, Date ordertime);
+
+	@Select("select * from order where deskno=#{deskno}")
+	order queryByDeskno(String deskno);
+
+	@Select("select * from order where ordertime=#{ordertime}")
+	order queryByOrdertime(String ordertime);
+
+	@Select("select * from order where id=#{id}")
+	order queryById(Integer id);
+	
+	/** query :  all*/
+	@Select("select * from order")
+	List queryAll();
+	
+	//update
+	@Update("update order set deskno=#{deskno},ordertime=#{ordertime} where id=#{id}")
+	void update(order m);
+	
+	/** delete :  by id*/
+	@Delete("delete from order where id=#{id}")
+	void delete(int id);
+	
+	@Delete("delete from order where id=#{id}")
+	void deleteById(Integer id);

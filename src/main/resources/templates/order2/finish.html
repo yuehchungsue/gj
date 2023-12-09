@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="BIG5">
+<title>購物完成(finish)</title>
+<link rel="stylesheet" href="/css/st1.css">
+</head>
+<body>
+<div id="header"></div>
+<div id="navigater"></div>
+<div id="content">
+	購物完成(finish)
+	<div id="pic">
+		<table width=450 border=1>
+			<tr>
+				<td colspan=2 align=center>
+				<div th:text="${session.member.name}"/>
+				購物完成(finish), 這是你的確認的訂單細目
+			<tr>
+				<td width=100>品名
+				<td >數量				
+			<tr>
+				<td width=100>A商品(100元)
+				<td th:text="${session.order2.a}">
+			<tr>
+				<td width=100>B商品(120元)
+				<td th:text="${session.order2.b}">
+			<tr>
+				<td width=100>C商品(150元)
+				<td th:text="${session.order2.c}">
+			<tr>
+				<td width=100>金額共
+				<td th:text=
+				"${session.order2.a}*100+
+				${session.order2.b}*120+
+				${session.order2.c}*150">
+			<tr>
+				<td colspan=2 align=center>
+				<a href="/order2/order2">繼續購物</a>
+				<a href="/order2/logout">登出</a>	
+				<a href="http://localhost:8080/login3.html">登出2</a>									
+		</table>
+	</div>	
+</div>
+<div id="footer"></div>
+
+</body>
+</html>

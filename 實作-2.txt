@@ -1,0 +1,50 @@
+	/**
+	 * @param deskno
+	 * @param ordertime
+	 */
+	public order(String deskno, Date ordertime) {
+		super();
+		this.deskno = deskno;
+		this.ordertime = ordertime;
+	}
+
+	@Autowired
+	private orderMapper ordermapper;
+	
+	@RequestMapping("addOrder")
+	public void add(String deskno, Date ordertime)
+	{
+		order m=new order(deskno, ordertime);
+		ordermapper.add(m);
+	}
+	
+	@RequestMapping("queryUser")
+	//@RequestMapping(value="queryUser", produces="application/json")
+	public order query(String orderno, String ordername)
+	{
+		return ordermapper.query(orderno, ordername);
+	}
+	
+	@RequestMapping("queryOrderAll")
+	public List<order> queryAll()
+	{
+		return ordermapper.queryAll();
+	}
+	
+	@RequestMapping("queryPorderById")
+	public order queryId(int id)
+	{
+		return ordermapper.queryById(id);
+	}
+	
+	@RequestMapping("updatOrder")
+	public void update(order m)
+	{
+		ordermapper.update(m);
+	}
+	
+	@RequestMapping("deletOrder")
+	public void deleteByid(int id)
+	{
+		ordermapper.delete(id);
+	}	

@@ -1,0 +1,1 @@
+curl -X POST --header "Accept: application/*" http://10.10.1.160:8080/queryUser?username=1&password=1
